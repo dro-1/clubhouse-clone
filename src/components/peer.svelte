@@ -5,7 +5,6 @@
   let firstCharInName = "";
 
   $: firstCharInName = peer ? peer.name.split(" ")[0][0].toUpperCase() : "";
-  $: console.log(peer.isLocal);
 </script>
 
 <div class="peer">

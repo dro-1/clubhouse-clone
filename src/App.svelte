@@ -8,10 +8,6 @@
 
   let page;
 
-  window.process = {
-    ...window.process,
-  };
-
   router("/", () => (page = Home));
 
   router("/room", () => (page = Room));

@@ -1,10 +1,5 @@
-import { v4 as uuidv4 } from "uuid";
-
-let env = env_var;
-env = env.env;
-
-const TOKEN_ENDPOINT = env.TOKEN_ENDPOINT;
-const ROOM_ID = env.ROOM_ID;
+const TOKEN_ENDPOINT = process.env.TOKEN_ENDPOINT;
+const ROOM_ID = process.env.ROOM_ID;
 
 export const getToken = async (userRole, userName) => {
   const role = userRole.toLowerCase();
