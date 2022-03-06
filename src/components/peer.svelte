@@ -1,8 +1,17 @@
 <script>
+  import { selectPeerAudioByID } from "@100mslive/hms-video-store";
+  import { onMount } from "svelte";
+  import { hmsStore } from "../services/hms";
   export let peer = null;
 
   let isContextOpen = false;
   let firstCharInName = "";
+
+  onMount(async () => {
+    hmsStore.subscribe((peerAudio) => {
+      console.log(`Peer Audio of ${peer?.name}`, peerAudio);
+    }, selectPeerAudioByID(peer?.id));
+  });
 
   $: firstCharInName = peer ? peer.name.split(" ")[0][0].toUpperCase() : "";
 </script>
