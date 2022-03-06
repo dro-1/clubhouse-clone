@@ -21,9 +21,7 @@
   };
 
   onMount(async () => {
-    hmsStore.subscribe((peerAudio) => {
-      console.log(`Peer Audio of ${peer?.name}`, peerAudio);
-    }, selectPeerAudioByID(peer?.id));
+    hmsStore.subscribe((peerAudio) => {}, selectPeerAudioByID(peer?.id));
   });
 
   onMount(async () => {
@@ -33,7 +31,6 @@
   });
 
   $: firstCharInName = peer ? peer.name.split(" ")[0][0].toUpperCase() : "";
-  $: console.log(peer);
 </script>
 
 <div class="peer">

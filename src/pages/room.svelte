@@ -18,7 +18,6 @@
     let res = hmsStore.getState(selectLocalPeerRole);
     localPeerRole = res ? res.name : "";
     audioEnabled = hmsStore.getState(selectIsLocalAudioEnabled);
-    console.log(audioEnabled);
     PeerStore.set(iPeers);
   };
 

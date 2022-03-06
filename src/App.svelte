@@ -15,7 +15,6 @@
   router.start();
 
   const onRoomStateChange = (connected) => {
-    console.log("isConnected - ", connected);
     if (connected) router.redirect("/room");
     else router.redirect("/");
   };
