@@ -53,9 +53,11 @@ export default {
       }),
       "process.env.NODE_ENV": JSON.stringify("production"),
       "process.env.TOKEN_ENDPOINT": JSON.stringify(
-        config().parsed.TOKEN_ENDPOINT
+        config().parsed?.TOKEN_ENDPOINT || process.env.TOKEN_ENDPOINT
       ),
-      "process.env.ROOM_ID": JSON.stringify(config().parsed.ROOM_ID),
+      "process.env.ROOM_ID": JSON.stringify(
+        config().parsed?.ROOM_ID || process.env.ROOM_ID
+      ),
     }),
     svelte({
       preprocess: preprocess(),
