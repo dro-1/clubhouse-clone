@@ -1,11 +1,24 @@
 <script>
-  import { selectPeerAudioByID } from "@100mslive/hms-video-store";
+  import {
+    selectPeerAudioByID,
+    selectIsPeerAudioEnabled,
+  } from "@100mslive/hms-video-store";
   import { onMount } from "svelte";
-  import { hmsStore } from "../services/hms";
+  import { hmsActions, hmsStore } from "../services/hms";
   export let peer = null;
+  export let localPeerRole = "";
 
   let isContextOpen = false;
   let firstCharInName = "";
+  let isPeerMuted = false;
+
+  const togglePeerAudio = () => {
+    hmsActions.setRemoteTrackEnabled(peer.audioTrack, isPeerMuted);
+  };
+
+  const changeRole = (role) => {
+    hmsActions.changeRole(peer.id, role, true);
+  };
 
   onMount(async () => {
     hmsStore.subscribe((peerAudio) => {
@@ -13,7 +26,14 @@
     }, selectPeerAudioByID(peer?.id));
   });
 
+  onMount(async () => {
+    hmsStore.subscribe((isPeerAudioEnabled) => {
+      isPeerMuted = !isPeerAudioEnabled;
+    }, selectIsPeerAudioEnabled(peer?.id));
+  });
+
   $: firstCharInName = peer ? peer.name.split(" ")[0][0].toUpperCase() : "";
+  $: console.log(peer);
 </script>
 
 <div class="peer">
@@ -23,17 +43,21 @@
     </div>
     <p>{peer ? peer.name : ""}{peer && peer.isLocal ? " (You)" : ""}</p>
   </div>
-  <div class="context" class:open={isContextOpen}>
-    <button>Unmute</button>
-
-    <button>Make Speaker</button>
-    <button>Make Listener</button>
-  </div>
+  {#if localPeerRole == "moderator" && !peer.isLocal}
+    <div class="context" class:open={isContextOpen}>
+      <button on:click={togglePeerAudio}
+        >{isPeerMuted ? "Unmute" : "Mute"}</button
+      >
+      <button on:click={() => changeRole("speaker")}>Make Speaker</button>
+      <button on:click={() => changeRole("listener")}>Make Listener</button>
+    </div>
+  {/if}
 </div>
 
 <style lang="scss">
   div.peer {
     position: relative;
+    margin: 2rem;
     div.content {
       position: relative;
       z-index: 2;

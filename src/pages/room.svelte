@@ -43,7 +43,7 @@
 
   <section class="peers">
     {#each peers as peer (peer.id)}
-      <Peer {peer} />
+      <Peer {localPeerRole} {peer} />
     {/each}
   </section>
   <div class="buttons">
