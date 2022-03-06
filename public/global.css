@@ -38,6 +38,7 @@ textarea {
   font-size: inherit;
   border: 1px solid #ccc;
   border-radius: 2px;
+  cursor: pointer;
 }
 
 input:disabled {

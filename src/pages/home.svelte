@@ -1,23 +1,53 @@
 <script>
-  let name = "Dro";
+  import { hmsActions } from "./../services/hms";
+  import { getToken } from "./../utils/utils";
+  let userName = "";
+  let role = "";
+
+  const submitForm = async () => {
+    if (!userName || !role) return;
+    try {
+      const authToken = await getToken(role, userName);
+      const config = {
+        userName,
+        authToken,
+        settings: {
+          isAudioMuted: true,
+          isVideoMuted: false,
+        },
+        //metaData: JSON.stringify({city: 'Winterfell', knowledge: 'nothing'}),
+        rememberDeviceSelection: true, // remember manual device change
+      };
+
+      // joins rooms
+      hmsActions.join(config);
+    } catch (error) {
+      console.log("Token API Error", error);
+    }
+  };
 </script>
 
 <main>
   <form>
     <header>Join Room</header>
-    <label>
+    <label for="username">
       Username
-      <input type="text" placeholder="Username" />
+      <input
+        bind:value={userName}
+        id="username"
+        type="text"
+        placeholder="Username"
+      />
     </label>
     <label>
       Role
-      <select name="role">
+      <select bind:value={role} name="role">
         <option value="speaker">Speaker</option>
         <option value="listener">Listener</option>
         <option value="moderator">Moderator</option>
       </select>
     </label>
-    <button> Join </button>
+    <button on:click|preventDefault={submitForm}> Join </button>
   </form>
 </main>
 

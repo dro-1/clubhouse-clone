@@ -1,18 +1,23 @@
 <script>
-  let peerName = "Dro";
+  export let peer = null;
+
   let isContextOpen = false;
+  let firstCharInName = "";
+
+  $: firstCharInName = peer ? peer.name.split(" ")[0][0].toUpperCase() : "";
+  $: console.log(peer.isLocal);
 </script>
 
 <div class="peer">
   <div on:click={() => (isContextOpen = !isContextOpen)} class="content">
-    <img
-      src="https://i2-prod.football.london/incoming/article21081402.ece/ALTERNATES/s1200c/0_CR7.jpg"
-      alt="peer"
-    />
-    <p>{peerName}</p>
+    <div class="image">
+      <p>{firstCharInName}</p>
+    </div>
+    <p>{peer ? peer.name : ""}{peer && peer.isLocal ? " (You)" : ""}</p>
   </div>
   <div class="context" class:open={isContextOpen}>
     <button>Unmute</button>
+
     <button>Make Speaker</button>
     <button>Make Listener</button>
   </div>
@@ -25,12 +30,20 @@
       position: relative;
       z-index: 2;
       overflow: hidden;
-      img {
+      cursor: pointer;
+      div.image {
         border-radius: 50%;
         display: block;
         margin-bottom: 0.5rem;
         width: 100px;
         height: 100px;
+        background-color: #444;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        p {
+          font-size: 4rem;
+        }
       }
       p {
         font-size: 1.5rem;

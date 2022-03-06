@@ -1,16 +1,56 @@
 <script>
+  import page from "page";
   import Peer from "./../components/peer.svelte";
-  let name = "Dro";
+  import { hmsActions, hmsStore } from "./../services/hms";
+  import { selectPeers } from "@100mslive/hms-video-store";
+  import { onMount, onDestroy } from "svelte";
+  import { PeerStore } from "./../stores";
+  import {
+    selectLocalPeerRole,
+    selectIsLocalAudioEnabled,
+  } from "@100mslive/hms-video-store";
+
+  let peers = [];
+  let localPeerRole = "";
+  let audioEnabled = null;
+
+  const handlePeers = (iPeers) => {
+    localPeerRole = hmsStore.getState(selectLocalPeerRole).name;
+    audioEnabled = hmsStore.getState(selectIsLocalAudioEnabled);
+    PeerStore.set(iPeers);
+  };
+
+  const handleMute = async () => {
+    await hmsActions.setLocalAudioEnabled(!audioEnabled);
+    audioEnabled = hmsStore.getState(selectIsLocalAudioEnabled);
+  };
+
+  onMount(async () => {
+    hmsStore.subscribe(handlePeers, selectPeers);
+  });
+
+  const leaveRoom = () => hmsActions.leave();
+
+  onDestroy(leaveRoom);
+
+  $: peers = $PeerStore;
 </script>
 
 <main>
   <h1>Welcome To The Room</h1>
+
   <section class="peers">
-    <Peer />
+    {#each peers as peer (peer.id)}
+      <Peer {peer} />
+    {/each}
   </section>
   <div class="buttons">
-    <button class="mute">Mute</button>
-    <button class="leave">Leave Room</button>
+    {#if localPeerRole != "listener"}
+      <button on:click={handleMute} class="mute"
+        >{audioEnabled ? "Mute" : "Unmute"}</button
+      >
+    {/if}
+    <button on:click={leaveRoom} class="leave">Leave Room</button>
   </div>
 </main>
 
@@ -37,7 +77,7 @@
       width: 100%;
     }
     div.buttons {
-      width: 200px;
+      width: 250px;
       display: flex;
       justify-content: space-between;
       button {
